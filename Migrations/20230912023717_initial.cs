@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -163,11 +162,12 @@ namespace Rare_Yellow_Tigers.Migrations
                 columns: table => new
                 {
                     PostsId = table.Column<int>(type: "integer", nullable: false),
-                    ReactionsId = table.Column<int>(type: "integer", nullable: false)
+                    ReactionsId = table.Column<int>(type: "integer", nullable: false),
+                    UsersId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostReaction", x => new { x.PostsId, x.ReactionsId });
+                    table.PrimaryKey("PK_PostReaction", x => new { x.PostsId, x.ReactionsId, x.UsersId });
                     table.ForeignKey(
                         name: "FK_PostReaction_Posts_PostsId",
                         column: x => x.PostsId,
@@ -178,6 +178,12 @@ namespace Rare_Yellow_Tigers.Migrations
                         name: "FK_PostReaction_Reactions_ReactionsId",
                         column: x => x.ReactionsId,
                         principalTable: "Reactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostReaction_Users_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
