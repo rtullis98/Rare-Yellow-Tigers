@@ -9,5 +9,6 @@ public class Tag
     
     public string? Label { get; set; }
     
+    public ICollection<Post> Posts { get; set; }
 
 }

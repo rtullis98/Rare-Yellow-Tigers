@@ -9,6 +9,8 @@ public class Subscription
     public DateTime CreatedOn { get; set; }
     public DateTime EndedOn { get; set;}
     
+    public RareUser Author { get; set; }
+    public RareUser Follower { get; set; }
    
 
     
