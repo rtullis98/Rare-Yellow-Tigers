@@ -1,6 +1,6 @@
 ﻿namespace Rare_Yellow_Tigers.Models;
 
-public class RareUsers
+public class RareUser
 {
     public int Id { get; set; }
     public string FirstName { get; set; }
@@ -14,5 +14,9 @@ public class RareUsers
 
     public bool IsStaff { get; set; }
    
+    public ICollection<Comment> Comments { get; set; }
+    
+    public ICollection<Post> Posts { get; set; }
 
+  
 }

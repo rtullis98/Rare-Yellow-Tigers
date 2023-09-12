@@ -11,7 +11,11 @@ public class Post
     public string Content { get; set; }
     public bool IsApproved { get; set; }
 
- 
+ public ICollection<Comment> Comments { get; set; }
     
+public ICollection<Tag> Tags { get; set; }
 
+    public Category Category { get; set; }
+    public ICollection<Reaction> Reactions { get; set; }
+    public RareUser RareUser { get; set; }
 }

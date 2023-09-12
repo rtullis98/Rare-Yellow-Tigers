@@ -6,6 +6,9 @@ public class Reaction
     public string Label { get; set; }
     public string Image_Url { get; set; }
 
+    public ICollection<Post> Posts { get; set; }
+
+  
     
 
 }

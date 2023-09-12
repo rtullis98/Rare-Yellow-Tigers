@@ -1,4 +1,6 @@
-﻿namespace Rare_Yellow_Tigers.Models;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace Rare_Yellow_Tigers.Models;
 
 public class Comment
 {
@@ -8,5 +10,9 @@ public class Comment
     public string Content { get; set; }
 
    public DateTime CreatedOn { get; set; }
+
+    public RareUser Author { get; set; }  
+    public Post Post { get; set; }
+
 
 }
