@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Rare_Yellow_Tigers.Models;
@@ -11,9 +12,11 @@ using Rare_Yellow_Tigers.Models;
 namespace RareYellowTigers.Migrations
 {
     [DbContext(typeof(RareYellowTigersDbContext))]
-    partial class RareYellowTigersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230912233113_changes")]
+    partial class changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
