@@ -18,5 +18,6 @@ public class RareUser
     
     public ICollection<Post> Posts { get; set; }
 
+    
   
 }

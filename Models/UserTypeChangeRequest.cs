@@ -10,8 +10,5 @@ public class UserTypeChangeRequest
     public int Admin_Two_Id { get;set; }
     public int Modified_User_Id { get; set; }
 
-    public RareUser Admin_One { get; set; }
-    public RareUser Admin_Two { get; set; }
-
-    public RareUser Modified_User { get; set; }
+   public ICollection<RareUser> RareUsers { get; set; } 
 }
