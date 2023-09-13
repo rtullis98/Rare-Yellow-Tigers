@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
 using Rare_Yellow_Tigers.Models;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -36,5 +36,82 @@ app.UseHttpsRedirection();
 //app.UseAuthorization();
 
 //app.MapControllers();
+
+
+// Start of endpoints for Posts
+app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
+{
+    var posts = await db.Posts.ToListAsync();
+    if (posts == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(posts);
+});
+
+app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
+{
+    var post = await db.Posts.FirstOrDefaultAsync(p => p.Id == id);
+
+    if (post == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(post);
+
+});
+
+app.MapPost("/api/post", (RareYellowTigersDbContext db, Post post) =>
+{
+    try
+    {
+        db.Add(post);
+        db.SaveChanges();
+        return Results.Created($"/api/post/{post.Id}", post);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(ex);
+    }
+});
+
+app.MapPut("/api/post{id}", (int id, RareYellowTigersDbContext db, Post post) =>
+{
+    var postToUpdate = db.Posts.Find(id);
+
+    if (postToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    postToUpdate.RareUserId = post.RareUserId;
+    postToUpdate.CategoryId = post.CategoryId;
+    postToUpdate.Title = post.Title;
+    postToUpdate.PublicationDate = post.PublicationDate;
+    postToUpdate.ImageUrl = post.ImageUrl;
+    postToUpdate.Content = post.Content;
+    postToUpdate.IsApproved = post.IsApproved;
+
+    db.SaveChanges();
+    return Results.Ok(postToUpdate);
+
+});
+
+app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
+{
+    var postToDelete = db.Posts.Find(id);
+
+    if (postToDelete == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Posts.Remove(postToDelete);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+//End of endpoints for Posts
 
 app.Run();
