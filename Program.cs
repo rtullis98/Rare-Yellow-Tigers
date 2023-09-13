@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using Rare_Yellow_Tigers.Models;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,38 +33,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-//delete a post
-app.MapDelete("/api/posts/{id}", (RareYellowTigersDbContext db, int id) =>
-{
-    Post post = db.Posts.SingleOrDefault(post => post.Id == id);
-    if (post == null)
-    {
-        return Results.NotFound();
-    }
-    db.Posts.Remove(post);
-    db.SaveChanges();
-    return Results.NoContent();
-
-});
-
-//edit a post
-app.MapPut("/posts/{id}", (RareYellowTigersDbContext db, int id, Post post) =>
-{
-    Post postToUpdate = db.Posts.FirstOrDefault(post => post.Id == id);
-    if (postToUpdate == null)
-    {
-        return Results.NotFound();
-    }
-
-    if (id != post.Id)
-    {
-        return Results.BadRequest();
-    }
-    postToUpdate.Id = post.Id;
-    db.SaveChanges();
-    return Results.NoContent();
-});
 
 
 //app.UseAuthorization();
