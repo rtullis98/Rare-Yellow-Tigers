@@ -82,4 +82,48 @@ app.MapDelete("/api/category/{categoryId}", (RareYellowTigersDbContext db, int i
     return Results.NoContent();
 });
 
+//  #### TAG Endpoints ####
+
+//Get all Tags
+app.MapGet("/api/tags", (RareYellowTigersDbContext db) =>
+{
+    return db.Tags.ToList();
+});
+
+//Create a Tag
+app.MapPost("/api/tag", (RareYellowTigersDbContext db, Tag tag) =>
+{
+    db.Tags.Add(tag);
+    db.SaveChanges();
+    return Results.Created($"/api/tag", tag);
+});
+
+//Edit a Tag
+app.MapPut("/api/tag/{tagId}", (RareYellowTigersDbContext db, Tag tag, int id) =>
+{
+    Tag tagToUpdate = db.Tags.Where(x =>x.Id == id).FirstOrDefault();
+    if(tagToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+    
+    tagToUpdate.Label = tag.Label;
+    db.SaveChanges();
+    return Results.Created($"/api/tag/tag.Id", tag);
+
+});
+
+//Delete a Tag
+app.MapDelete("/api/tag/{tagId}", (RareYellowTigersDbContext db, int id) =>
+{
+    var tagToDelete = db.Tags.Where(x => x.Id == id).FirstOrDefault();
+    if(tagToDelete == null)
+    {
+        return Results.NotFound();
+    }
+    db.Tags.Remove(tagToDelete);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
 app.Run();
