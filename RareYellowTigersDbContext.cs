@@ -41,13 +41,18 @@ public class RareYellowTigersDbContext : DbContext
        });
 
         modelBuilder.Entity<Tag>().HasData(new Tag[]
-     {
+       {
         new Tag {Id = 1, Label="Action" },
         new Tag {Id = 2, Label="Rock"},
         new Tag {Id = 3, Label="Drama"},
+       });
 
-     });
-
+        modelBuilder.Entity<Comment>().HasData(new Comment[]
+        {
+            new Comment {Id = 1, AuthorId = 1, PostId  = 1, Content = "What is dis?", CreatedOn = new DateTime(2021, 1, 2)},
+            new Comment {Id = 2, AuthorId = 2, PostId  = 2, Content = "Werkkkkkk", CreatedOn = new DateTime(2022, 1, 2)},
+            new Comment {Id = 3, AuthorId = 3, PostId  = 3, Content = "Looks delicious", CreatedOn = new DateTime(2023, 1, 2)},
+        });
     }
 
 
