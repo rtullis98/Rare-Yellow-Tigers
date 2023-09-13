@@ -74,6 +74,46 @@ app.MapPut("/posts/{id}", (RareYellowTigersDbContext db, int id, Post post) =>
 
 //app.MapControllers();
 
+
+// COMMENTS
+// Create a new comment
+app.MapPost("/api/comments", (RareYellowTigersDbContext db, Comment comment) =>
+{
+    db.Comments.Add(comment);
+    db.SaveChanges();
+    return Results.Created($"/api/comments/{comment.Id}", comment);
+});
+
+// Update an existing comment
+app.MapPut("/api/comments/{commentId}", (RareYellowTigersDbContext db, int id, Comment comment) =>
+{
+    Comment commentToUpdate = db.Comments.SingleOrDefault(c => c.Id == id);
+    if (commentToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+    commentToUpdate.AuthorId = comment.AuthorId;
+    commentToUpdate.PostId = comment.PostId;
+    commentToUpdate.Content = comment.Content;
+    commentToUpdate.CreatedOn = comment.CreatedOn;
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
+// Delete an existing comment 
+app.MapDelete("/api/comments/{commentId}", (RareYellowTigersDbContext db, int id) =>
+{
+    Comment comment = db.Comments.SingleOrDefault(c => c.Id == id);
+    if (comment == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Comments.Remove(comment);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
 //  ###   Category End Points   ###
 
 //Get all Categories
@@ -115,8 +155,6 @@ app.MapDelete("/api/category/{categoryId}", (RareYellowTigersDbContext db, int i
         return Results.NotFound();
     }
     db.Categories.Remove(categoryToDelete);
-    db.SaveChanges();
-    return Results.NoContent();
-});
+  
 
 app.Run();
