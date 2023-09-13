@@ -150,11 +150,13 @@ app.MapPut("/api/category/{categoryId}", (RareYellowTigersDbContext db, Category
 app.MapDelete("/api/category/{categoryId}", (RareYellowTigersDbContext db, int id) =>
 {
     var categoryToDelete = db.Categories.Where(x => x.Id == id).FirstOrDefault();
-    if(categoryToDelete == null)
+    if (categoryToDelete == null)
     {
         return Results.NotFound();
     }
     db.Categories.Remove(categoryToDelete);
+    return Results.NoContent();
+});
   
 
 //  #### TAG Endpoints ####
