@@ -38,6 +38,8 @@ app.UseHttpsRedirection();
 //app.MapControllers();
 
 //  ###   Category End Points   ###
+
+//Get all Categories
 app.MapGet("/api/catagories", (RareYellowTigersDbContext db) =>
 {
     return db.Categories.ToList();
@@ -66,5 +68,18 @@ app.MapPut("/api/category/{categoryId}", (RareYellowTigersDbContext db, Category
 	return Results.Created($"/api/category/category.Id", category);
 });
 
+
+//Delete Category
+app.MapDelete("/api/category/{categoryId}", (RareYellowTigersDbContext db, int id) =>
+{
+    var categoryToDelete = db.Categories.Where(x => x.Id == id).FirstOrDefault();
+    if(categoryToDelete == null)
+    {
+        return Results.NotFound();
+    }
+    db.Categories.Remove(categoryToDelete);
+    db.SaveChanges();
+    return Results.NoContent();
+});
 
 app.Run();
