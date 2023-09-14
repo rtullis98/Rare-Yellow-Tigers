@@ -183,7 +183,13 @@ app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
 
 app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
 {
-    var post = await db.Posts.FirstOrDefaultAsync(p => p.Id == id);
+    var post = await db.Posts
+    .Include(p => p.Comments)
+    .Include(p => p.Reactions)
+    .Include(p => p.Tags)
+    .Include(p => p.Category)
+    .Include(p => p.RareUser)
+    .FirstOrDefaultAsync(p => p.Id == id);
 
     if (post == null)
     {
@@ -208,7 +214,7 @@ app.MapPost("/api/post", (RareYellowTigersDbContext db, Post post) =>
     }
 });
 
-app.MapPut("/api/post{id}", (int id, RareYellowTigersDbContext db, Post post) =>
+app.MapPut("/api/post/{id}", (int id, RareYellowTigersDbContext db, Post post) =>
 {
     var postToUpdate = db.Posts.Find(id);
 
