@@ -244,7 +244,7 @@ app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
     db.SaveChanges();
     return Results.NoContent();
 });
-//End of endpoints for Posts
+
 
 //Add a Tag to a Post
 app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
@@ -261,4 +261,11 @@ app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int 
     return post;
 
 });
+
+//End of endpoints for Posts
+
+
+
+
+
 app.Run();
