@@ -203,4 +203,28 @@ app.MapDelete("/api/tag/{tagId}", (RareYellowTigersDbContext db, int id) =>
     return Results.NoContent();
 });
 
+//Add a Tag to a Post
+app.MapPost("/api/post/{tagId}", (RareYellowTigersDbContext db, Tag tag) =>
+{
+    db.Tags.Add(tag);
+    db.SaveChanges();
+    return Results.Created($"/api/tag", tag);
+});
+
+
+//Assign genre to song
+app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
+{
+    var post = db.Posts.SingleOrDefault(s => s.Id == postId);
+    var tag = db.Tags.SingleOrDefault(g => g.Id == tagId);
+
+    if (post.Tags == null)
+    {
+        post.Tags = new List<Tag>();
+    }
+    post.Tags.Add(tag);
+    db.SaveChanges();
+    return post;
+
+});
 app.Run();
