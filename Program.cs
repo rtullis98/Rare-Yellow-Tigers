@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
 
@@ -148,7 +149,7 @@ app.MapPut("/api/tag/{tagId}", (RareYellowTigersDbContext db, Tag tag, int id) =
     {
         return Results.NotFound();
     }
-
+    
     tagToUpdate.Label = tag.Label;
     db.SaveChanges();
     return Results.Created($"/api/tag/tag.Id", tag);
@@ -249,6 +250,28 @@ app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
     db.SaveChanges();
     return Results.NoContent();
 });
+
+
+//Add a Tag to a Post
+app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
+{
+    var post = db.Posts.SingleOrDefault(s => s.Id == postId);
+    var tag = db.Tags.SingleOrDefault(g => g.Id == tagId);
+
+    if (post.Tags == null)
+    {
+        post.Tags = new List<Tag>();
+    }
+    post.Tags.Add(tag);
+    db.SaveChanges();
+    return post;
+
+});
+
 //End of endpoints for Posts
+
+
+
+
 
 app.Run();
