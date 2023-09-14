@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -243,6 +244,16 @@ app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
     db.SaveChanges();
     return Results.NoContent();
 });
+
+// REACTIONS
+// Create a new reaction
+app.MapPost("/api/reactions", (RareYellowTigersDbContext db, Reaction reaction) =>
+{
+    db.Reactions.Add(reaction);
+    db.SaveChanges();
+    return Results.Created($"/api/comments/{reaction.Id}", reaction);
+});
+
 //End of endpoints for Posts
 
 app.Run();
