@@ -1,10 +1,25 @@
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//ADD CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000",
+                                "http://localhost:7129")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
+
 
 // Add services to the container.
 
@@ -25,6 +40,9 @@ builder.Services.Configure<JsonOptions>(options =>
 
 
 var app = builder.Build();
+
+//Add for Cors
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -149,7 +167,7 @@ app.MapPut("/api/tag/{tagId}", (RareYellowTigersDbContext db, Tag tag, int id) =
     {
         return Results.NotFound();
     }
-
+    
     tagToUpdate.Label = tag.Label;
     db.SaveChanges();
     return Results.Created($"/api/tag/tag.Id", tag);
@@ -184,7 +202,13 @@ app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
 
 app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
 {
-    var post = await db.Posts.FirstOrDefaultAsync(p => p.Id == id);
+    var post = await db.Posts
+    .Include(p => p.Comments)
+    .Include(p => p.Reactions)
+    .Include(p => p.Tags)
+    .Include(p => p.Category)
+    .Include(p => p.RareUser)
+    .FirstOrDefaultAsync(p => p.Id == id);
 
     if (post == null)
     {
@@ -209,7 +233,7 @@ app.MapPost("/api/post", (RareYellowTigersDbContext db, Post post) =>
     }
 });
 
-app.MapPut("/api/post{id}", (int id, RareYellowTigersDbContext db, Post post) =>
+app.MapPut("/api/post/{id}", (int id, RareYellowTigersDbContext db, Post post) =>
 {
     var postToUpdate = db.Posts.Find(id);
 
@@ -244,6 +268,7 @@ app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
     db.SaveChanges();
     return Results.NoContent();
 });
+
 
 //End of endpoints for Posts
 
@@ -325,6 +350,40 @@ app.MapGet("/api/users/{userId}/posts", (RareYellowTigersDbContext db, int id) =
 
     return assignedPosts;
 });
+
+
+//Add a Tag to a Post
+app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
+{
+    var post = db.Posts.SingleOrDefault(s => s.Id == postId);
+    var tag = db.Tags.SingleOrDefault(g => g.Id == tagId);
+
+    if (post.Tags == null)
+    {
+        post.Tags = new List<Tag>();
+    }
+    post.Tags.Add(tag);
+    db.SaveChanges();
+    return post;
+
+});
+
+
+
+
+//CHECK USER EXISTS
+app.MapGet("/api/checkuser/{uid}", (RareYellowTigersDbContext db, string uid) =>
+{
+    var userExists = db.Users.Where(x => x.Uid == uid).FirstOrDefault();
+    if (userExists == null)
+    {
+        return Results.StatusCode(204);
+    }
+    return Results.Ok(userExists);
+});
+
+
+
 
 
 app.Run();
