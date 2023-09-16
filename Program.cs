@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -269,6 +270,88 @@ app.MapDelete("/api/post/{id}", (int id, RareYellowTigersDbContext db) =>
 });
 
 
+//End of endpoints for Posts
+
+// REACTIONS
+// Create a new reaction
+app.MapPost("/api/reactions", (RareYellowTigersDbContext db, Reaction reaction) =>
+{
+    db.Reactions.Add(reaction);
+    db.SaveChanges();
+    return Results.Created($"/api/comments/{reaction.Id}", reaction);
+});
+
+// USERS
+// Getting all users
+app.MapGet("/api/users", (RareYellowTigersDbContext db) =>
+{
+    return db.Users.ToList();
+});
+
+// Create a new user
+app.MapPost("/api/users", (RareYellowTigersDbContext db, RareUser user) =>
+{
+    db.Users.Add(user);
+    db.SaveChanges();
+    return Results.Created($"/api/users/{user.Id}", user);
+});
+
+// Update an user
+app.MapPut("/api/users/{userId}", (RareYellowTigersDbContext db, int id, RareUser user) =>
+{
+    RareUser userToUpdate = db.Users.SingleOrDefault(u => u.Id == id);
+    if (userToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+    userToUpdate.FirstName = user.FirstName;
+    userToUpdate.LastName = user.LastName;
+    userToUpdate.Email = user.Email;
+    userToUpdate.Bio = user.Bio;
+    userToUpdate.Uid = user.Uid;    
+    userToUpdate.ProfileImageUrl = user.ProfileImageUrl;
+    userToUpdate.CreatedOn = user.CreatedOn;
+    userToUpdate.IsActive = user.IsActive;
+    userToUpdate.IsStaff = user.IsStaff;
+
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
+// Delete an user
+app.MapDelete("/api/users/{userId}", (RareYellowTigersDbContext db, int id) =>
+{
+    RareUser user = db.Users.SingleOrDefault(u => u.Id == id);
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+    db.Users.Remove(user);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
+// Get a single user profile
+app.MapGet("/api/users/{userId}", (RareYellowTigersDbContext db, int id) =>
+{
+    RareUser user = db.Users.FirstOrDefault(u => u.Id == id);
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(user);
+});
+
+// Get a current user's posts
+app.MapGet("/api/users/{userId}/posts", (RareYellowTigersDbContext db, int id) =>
+{
+    RareUser user = db.Users.FirstOrDefault(u => u.Id == id);
+    ICollection<Post> assignedPosts = db.Posts.Where(p => p.RareUserId == id).ToList();
+
+    return assignedPosts;
+});
+
+
 //Add a Tag to a Post
 app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
 {
@@ -285,7 +368,7 @@ app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int 
 
 });
 
-//End of endpoints for Posts
+
 
 
 //CHECK USER EXISTS
@@ -298,6 +381,7 @@ app.MapGet("/api/checkuser/{uid}", (RareYellowTigersDbContext db, string uid) =>
     }
     return Results.Ok(userExists);
 });
+
 
 
 
