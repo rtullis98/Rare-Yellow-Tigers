@@ -5,6 +5,20 @@ using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//ADD CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000",
+                                "http://localhost:7129")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
+
 
 // Add services to the container.
 
@@ -25,6 +39,9 @@ builder.Services.Configure<JsonOptions>(options =>
 
 
 var app = builder.Build();
+
+//Add for Cors
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -270,6 +287,17 @@ app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int 
 
 //End of endpoints for Posts
 
+
+//CHECK USER EXISTS
+app.MapGet("/api/checkuser/{uid}", (RareYellowTigersDbContext db, string uid) =>
+{
+    var userExists = db.Users.Where(x => x.Uid == uid).FirstOrDefault();
+    if (userExists == null)
+    {
+        return Results.StatusCode(204);
+    }
+    return Results.Ok(userExists);
+});
 
 
 
