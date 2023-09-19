@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using Rare_Yellow_Tigers.DTOs;
 using Rare_Yellow_Tigers.Models;
 using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -101,7 +100,7 @@ app.MapDelete("/api/comments/{commentId}", (RareYellowTigersDbContext db, int id
 //  ###   Category End Points   ###
 
 //Get all Categories
-app.MapGet("/api/catagories", (RareYellowTigersDbContext db) =>
+app.MapGet("/api/categories", (RareYellowTigersDbContext db) =>
 {
     return db.Categories.ToList();
 });
@@ -167,7 +166,7 @@ app.MapPut("/api/tag/{tagId}", (RareYellowTigersDbContext db, Tag tag, int id) =
     {
         return Results.NotFound();
     }
-    
+
     tagToUpdate.Label = tag.Label;
     db.SaveChanges();
     return Results.Created($"/api/tag/tag.Id", tag);
@@ -191,14 +190,30 @@ app.MapDelete("/api/tag/{tagId}", (RareYellowTigersDbContext db, int id) =>
 // Start of endpoints for Posts
 app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
 {
-    var posts = await db.Posts.ToListAsync();
+    var posts = await db.Posts
+        .Include(p => p.RareUser)
+        .Include(p => p.Category)
+        .Include(p => p.Tags)
+        .ToListAsync();
+
     if (posts == null)
     {
         return Results.NotFound();
     }
 
-    return Results.Ok(posts);
+    var postDTOs = posts.Select(post => new PostDTO
+    {
+        Id = post.Id,
+        Title = post.Title,
+        UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+        PublicationDate = post.PublicationDate,
+        Category = post.Category.Label,
+        Tags = post.Tags.Select(tag => tag.Label).ToList()
+    }).ToList();
+
+    return Results.Ok(postDTOs);
 });
+
 
 app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
 {
@@ -308,7 +323,7 @@ app.MapPut("/api/users/{userId}", (RareYellowTigersDbContext db, int id, RareUse
     userToUpdate.LastName = user.LastName;
     userToUpdate.Email = user.Email;
     userToUpdate.Bio = user.Bio;
-    userToUpdate.Uid = user.Uid;    
+    userToUpdate.Uid = user.Uid;
     userToUpdate.ProfileImageUrl = user.ProfileImageUrl;
     userToUpdate.CreatedOn = user.CreatedOn;
     userToUpdate.IsActive = user.IsActive;
