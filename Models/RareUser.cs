@@ -18,6 +18,9 @@ public class RareUser
     
     public ICollection<Post> Posts { get; set; }
 
-    
-  
+    public RareUser()
+    {
+        this.CreatedOn = DateTime.Now;
+    }
+
 }

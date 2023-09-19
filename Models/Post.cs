@@ -18,4 +18,8 @@ public ICollection<Tag> Tags { get; set; }
     public Category Category { get; set; }
     public ICollection<Reaction> Reactions { get; set; }
     public RareUser RareUser { get; set; }
+    public Post()
+    {
+        this.PublicationDate = DateTime.Now;
+    }
 }

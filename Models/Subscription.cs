@@ -11,7 +11,12 @@ public class Subscription
     
     public RareUser Author { get; set; }
     public RareUser Follower { get; set; }
-   
 
-    
+    public Subscription()
+    {
+        this.CreatedOn = DateTime.Now;
+        this.EndedOn = DateTime.Now;
+    }
+
+
 }

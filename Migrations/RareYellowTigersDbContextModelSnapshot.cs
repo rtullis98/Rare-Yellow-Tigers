@@ -150,6 +150,26 @@ namespace RareYellowTigers.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("Rare_Yellow_Tigers.Models.PostReaction", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReactionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("ReactionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostReactions");
+                });
+
             modelBuilder.Entity("Rare_Yellow_Tigers.Models.RareUser", b =>
                 {
                     b.Property<int>("Id")
@@ -199,7 +219,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 1,
                             Bio = "hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 12, 18, 31, 12, 989, DateTimeKind.Local).AddTicks(8924),
+                            CreatedOn = new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3449),
                             Email = "papastone@rockville.net",
                             FirstName = "Fred",
                             IsActive = true,
@@ -211,7 +231,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 2,
                             Bio = "just another hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 12, 18, 31, 12, 989, DateTimeKind.Local).AddTicks(8955),
+                            CreatedOn = new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3460),
                             Email = "brubble@rockville.net",
                             FirstName = "Barny",
                             IsActive = true,
@@ -390,6 +410,33 @@ namespace RareYellowTigers.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("RareUser");
+                });
+
+            modelBuilder.Entity("Rare_Yellow_Tigers.Models.PostReaction", b =>
+                {
+                    b.HasOne("Rare_Yellow_Tigers.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rare_Yellow_Tigers.Models.Reaction", "Reaction")
+                        .WithMany()
+                        .HasForeignKey("ReactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rare_Yellow_Tigers.Models.RareUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Reaction");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Rare_Yellow_Tigers.Models.Subscription", b =>
