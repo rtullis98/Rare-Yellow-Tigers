@@ -14,5 +14,9 @@ public class Comment
     public RareUser Author { get; set; }  
     public Post Post { get; set; }
 
+    public Comment()
+    {
+        this.CreatedOn = DateTime.Now;
+    }
 
 }
