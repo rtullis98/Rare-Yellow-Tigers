@@ -243,25 +243,36 @@ app.MapGet("/api/postsbyuser/{id}", async (RareYellowTigersDbContext db, int id)
     return Results.Ok(postDTOs);
 });
 
-
-app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
+//GET SINGLE POST by POST ID
+app.MapGet("/api/singlepostsbyuser/{id}", async (RareYellowTigersDbContext db, int id) =>
 {
-    var post = await db.Posts
-    .Include(p => p.Comments)
-    .Include(p => p.Reactions)
-    .Include(p => p.Tags)
-    .Include(p => p.Category)
-    .Include(p => p.RareUser)
-    .FirstOrDefaultAsync(p => p.Id == id);
+    var posts = await db.Posts
+        .Include(p => p.RareUser)
+        .Include(p => p.Category)
+        .Include(p => p.Tags)
+        .Where(p => p.Id == id)
+        .ToListAsync();
 
-    if (post == null)
+    if (posts == null)
     {
         return Results.NotFound();
     }
 
-    return Results.Ok(post);
+    var postDTOs = posts.Select(post => new PostDTO
+    {
+        Id = post.Id,
+        Title = post.Title,
+        ImageUrl = post.ImageUrl,
+        UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+        PublicationDate = post.PublicationDate,
+        Category = post.Category.Label,
+        Tags = post.Tags.Select(tag => tag.Label).ToList()
+    }).ToList();
 
+    return Results.Ok(postDTOs);
 });
+
+
 
 app.MapPost("/api/post", (RareYellowTigersDbContext db, Post post) =>
 {
