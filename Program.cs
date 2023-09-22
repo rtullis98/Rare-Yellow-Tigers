@@ -214,6 +214,35 @@ app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
     return Results.Ok(postDTOs);
 });
 
+// GET All posts for a specific user
+app.MapGet("/api/postsbyuser/{id}", async (RareYellowTigersDbContext db, int id) =>
+{
+    var posts = await db.Posts
+        .Include(p => p.RareUser)
+        .Include(p => p.Category)
+        .Include(p => p.Tags)
+        .Where(p => p.RareUserId == id)
+        .ToListAsync();
+
+    if (posts == null)
+    {
+        return Results.NotFound();
+    }
+
+    var postDTOs = posts.Select(post => new PostDTO
+    {
+        Id = post.Id,
+        Title = post.Title,
+        ImageUrl = post.ImageUrl,
+        UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+        PublicationDate = post.PublicationDate,
+        Category = post.Category.Label,
+        Tags = post.Tags.Select(tag => tag.Label).ToList()
+    }).ToList();
+
+    return Results.Ok(postDTOs);
+});
+
 
 app.MapGet("/api/posts/{id}", async (int id, RareYellowTigersDbContext db) =>
 {
