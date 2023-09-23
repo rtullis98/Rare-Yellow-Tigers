@@ -67,6 +67,13 @@ app.MapPost("/api/comments", (RareYellowTigersDbContext db, Comment comment) =>
     return Results.Created($"/api/comments/{comment.Id}", comment);
 });
 
+//Get comments by Post Id
+app.MapGet("/api/commentsByPost/{id}", (RareYellowTigersDbContext db, int id) =>
+{
+    var comments = db.Comments.Where(c => c.PostId == id).ToList();
+    return comments;
+});
+
 // Update an existing comment
 app.MapPut("/api/comments/{commentId}", (RareYellowTigersDbContext db, int id, Comment comment) =>
 {

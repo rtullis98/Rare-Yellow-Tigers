@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RareYellowTigers.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -256,8 +256,8 @@ namespace RareYellowTigers.Migrations
                 columns: new[] { "Id", "Bio", "CreatedOn", "Email", "FirstName", "IsActive", "IsStaff", "LastName", "ProfileImageUrl", "Uid" },
                 values: new object[,]
                 {
-                    { 1, "hard working blue collar man", new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8535), "papastone@rockville.net", "Fred", true, false, "Flintstone", null, "" },
-                    { 2, "just another hard working blue collar man", new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8538), "brubble@rockville.net", "Barny", true, false, "Rubble", null, "" }
+                    { 1, "hard working blue collar man", new DateTime(2023, 9, 23, 10, 19, 23, 511, DateTimeKind.Local).AddTicks(1545), "papastone@rockville.net", "Fred", true, false, "Flintstone", null, "" },
+                    { 2, "just another hard working blue collar man", new DateTime(2023, 9, 23, 10, 19, 23, 511, DateTimeKind.Local).AddTicks(1550), "brubble@rockville.net", "Barny", true, false, "Rubble", null, "" }
                 });
 
             migrationBuilder.CreateIndex(
