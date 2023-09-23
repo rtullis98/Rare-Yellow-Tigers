@@ -12,8 +12,8 @@ using Rare_Yellow_Tigers.Models;
 namespace RareYellowTigers.Migrations
 {
     [DbContext(typeof(RareYellowTigersDbContext))]
-    [Migration("20230919001116_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230922180413_changes")]
+    partial class changes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace RareYellowTigers.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("PostReaction", b =>
-                {
-                    b.Property<int>("PostsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ReactionsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PostsId", "ReactionsId");
-
-                    b.HasIndex("ReactionsId");
-
-                    b.ToTable("PostReaction");
-                });
 
             modelBuilder.Entity("PostTag", b =>
                 {
@@ -222,7 +207,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 1,
                             Bio = "hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3449),
+                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5392),
                             Email = "papastone@rockville.net",
                             FirstName = "Fred",
                             IsActive = true,
@@ -234,7 +219,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 2,
                             Bio = "just another hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3460),
+                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5395),
                             Email = "brubble@rockville.net",
                             FirstName = "Barny",
                             IsActive = true,
@@ -260,7 +245,12 @@ namespace RareYellowTigers.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
 
                     b.ToTable("Reactions");
 
@@ -347,21 +337,6 @@ namespace RareYellowTigers.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PostReaction", b =>
-                {
-                    b.HasOne("Rare_Yellow_Tigers.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("PostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Rare_Yellow_Tigers.Models.Reaction", null)
-                        .WithMany()
-                        .HasForeignKey("ReactionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PostTag", b =>
                 {
                     b.HasOne("Rare_Yellow_Tigers.Models.Post", null)
@@ -442,6 +417,13 @@ namespace RareYellowTigers.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Rare_Yellow_Tigers.Models.Reaction", b =>
+                {
+                    b.HasOne("Rare_Yellow_Tigers.Models.Post", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("PostId");
+                });
+
             modelBuilder.Entity("Rare_Yellow_Tigers.Models.Subscription", b =>
                 {
                     b.HasOne("Rare_Yellow_Tigers.Models.RareUser", "Author")
@@ -469,6 +451,8 @@ namespace RareYellowTigers.Migrations
             modelBuilder.Entity("Rare_Yellow_Tigers.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("Rare_Yellow_Tigers.Models.RareUser", b =>

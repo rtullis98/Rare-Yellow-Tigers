@@ -194,6 +194,8 @@ app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
         .Include(p => p.RareUser)
         .Include(p => p.Category)
         .Include(p => p.Tags)
+        .Include(p => p.Comments)
+        .Include(p => p.Reactions)
         .ToListAsync();
 
     if (posts == null)
@@ -206,9 +208,12 @@ app.MapGet("/api/posts", async (RareYellowTigersDbContext db) =>
         Id = post.Id,
         Title = post.Title,
         UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+        Content = post.Content,
         PublicationDate = post.PublicationDate,
         Category = post.Category.Label,
-        Tags = post.Tags.Select(tag => tag.Label).ToList()
+        Tags = post.Tags.Select(tag => tag.Label).ToList(),
+        Comments = post.Comments.ToList(),
+        Reactions = post.Reactions.ToList(),
     }).ToList();
 
     return Results.Ok(postDTOs);
@@ -250,6 +255,8 @@ app.MapGet("/api/singlepostsbyuser/{id}", async (RareYellowTigersDbContext db, i
         .Include(p => p.RareUser)
         .Include(p => p.Category)
         .Include(p => p.Tags)
+        .Include(p => p.Comments)
+        .Include(p => p.Reactions)
         .Where(p => p.Id == id)
         .ToListAsync();
 
@@ -262,11 +269,13 @@ app.MapGet("/api/singlepostsbyuser/{id}", async (RareYellowTigersDbContext db, i
     {
         Id = post.Id,
         Title = post.Title,
-        ImageUrl = post.ImageUrl,
         UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+        Content = post.Content,
         PublicationDate = post.PublicationDate,
         Category = post.Category.Label,
-        Tags = post.Tags.Select(tag => tag.Label).ToList()
+        Tags = post.Tags.Select(tag => tag.Label).ToList(),
+        Comments = post.Comments.ToList(),
+        Reactions = post.Reactions.ToList(),
     }).ToList();
 
     return Results.Ok(postDTOs);
