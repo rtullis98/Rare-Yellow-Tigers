@@ -28,20 +28,6 @@ namespace RareYellowTigers.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reactions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Label = table.Column<string>(type: "text", nullable: false),
-                    ImageUrl = table.Column<string>(name: "Image_Url", type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reactions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -163,27 +149,47 @@ namespace RareYellowTigers.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostReaction",
+                name: "PostTag",
                 columns: table => new
                 {
                     PostsId = table.Column<int>(type: "integer", nullable: false),
-                    ReactionsId = table.Column<int>(type: "integer", nullable: false)
+                    TagsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostReaction", x => new { x.PostsId, x.ReactionsId });
+                    table.PrimaryKey("PK_PostTag", x => new { x.PostsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_PostReaction_Posts_PostsId",
+                        name: "FK_PostTag_Posts_PostsId",
                         column: x => x.PostsId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostReaction_Reactions_ReactionsId",
-                        column: x => x.ReactionsId,
-                        principalTable: "Reactions",
+                        name: "FK_PostTag_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Label = table.Column<string>(type: "text", nullable: false),
+                    ImageUrl = table.Column<string>(name: "Image_Url", type: "text", nullable: false),
+                    PostId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reactions_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -216,30 +222,6 @@ namespace RareYellowTigers.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "PostTag",
-                columns: table => new
-                {
-                    PostsId = table.Column<int>(type: "integer", nullable: false),
-                    TagsId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PostTag", x => new { x.PostsId, x.TagsId });
-                    table.ForeignKey(
-                        name: "FK_PostTag_Posts_PostsId",
-                        column: x => x.PostsId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PostTag_Tags_TagsId",
-                        column: x => x.TagsId,
-                        principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Label" },
@@ -251,12 +233,12 @@ namespace RareYellowTigers.Migrations
 
             migrationBuilder.InsertData(
                 table: "Reactions",
-                columns: new[] { "Id", "Image_Url", "Label" },
+                columns: new[] { "Id", "Image_Url", "Label", "PostId" },
                 values: new object[,]
                 {
-                    { 1, "👍", "Thumbs Up" },
-                    { 2, "👎", "Thumbs Down" },
-                    { 3, "💖", "Heart" }
+                    { 1, "👍", "Thumbs Up", null },
+                    { 2, "👎", "Thumbs Down", null },
+                    { 3, "💖", "Heart", null }
                 });
 
             migrationBuilder.InsertData(
@@ -274,8 +256,8 @@ namespace RareYellowTigers.Migrations
                 columns: new[] { "Id", "Bio", "CreatedOn", "Email", "FirstName", "IsActive", "IsStaff", "LastName", "ProfileImageUrl", "Uid" },
                 values: new object[,]
                 {
-                    { 1, "hard working blue collar man", new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3449), "papastone@rockville.net", "Fred", true, false, "Flintstone", null, "" },
-                    { 2, "just another hard working blue collar man", new DateTime(2023, 9, 18, 19, 11, 15, 861, DateTimeKind.Local).AddTicks(3460), "brubble@rockville.net", "Barny", true, false, "Rubble", null, "" }
+                    { 1, "hard working blue collar man", new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8535), "papastone@rockville.net", "Fred", true, false, "Flintstone", null, "" },
+                    { 2, "just another hard working blue collar man", new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8538), "brubble@rockville.net", "Barny", true, false, "Rubble", null, "" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -287,11 +269,6 @@ namespace RareYellowTigers.Migrations
                 name: "IX_Comments_PostId",
                 table: "Comments",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostReaction_ReactionsId",
-                table: "PostReaction",
-                column: "ReactionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostReactions_PostId",
@@ -324,6 +301,11 @@ namespace RareYellowTigers.Migrations
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reactions_PostId",
+                table: "Reactions",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_AuthorId",
                 table: "Subscriptions",
                 column: "AuthorId");
@@ -341,9 +323,6 @@ namespace RareYellowTigers.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "PostReaction");
-
-            migrationBuilder.DropTable(
                 name: "PostReactions");
 
             migrationBuilder.DropTable(
@@ -356,10 +335,10 @@ namespace RareYellowTigers.Migrations
                 name: "Reactions");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Categories");

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Rare_Yellow_Tigers.Models;
@@ -11,9 +12,11 @@ using Rare_Yellow_Tigers.Models;
 namespace RareYellowTigers.Migrations
 {
     [DbContext(typeof(RareYellowTigersDbContext))]
-    partial class RareYellowTigersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230922165212_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,7 +207,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 1,
                             Bio = "hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5392),
+                            CreatedOn = new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8535),
                             Email = "papastone@rockville.net",
                             FirstName = "Fred",
                             IsActive = true,
@@ -216,7 +219,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 2,
                             Bio = "just another hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5395),
+                            CreatedOn = new DateTime(2023, 9, 22, 11, 52, 12, 271, DateTimeKind.Local).AddTicks(8538),
                             Email = "brubble@rockville.net",
                             FirstName = "Barny",
                             IsActive = true,
