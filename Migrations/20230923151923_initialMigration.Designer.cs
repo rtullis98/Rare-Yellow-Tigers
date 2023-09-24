@@ -12,8 +12,8 @@ using Rare_Yellow_Tigers.Models;
 namespace RareYellowTigers.Migrations
 {
     [DbContext(typeof(RareYellowTigersDbContext))]
-    [Migration("20230922180413_changes")]
-    partial class changes
+    [Migration("20230923151923_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,7 +207,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 1,
                             Bio = "hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5392),
+                            CreatedOn = new DateTime(2023, 9, 23, 10, 19, 23, 511, DateTimeKind.Local).AddTicks(1545),
                             Email = "papastone@rockville.net",
                             FirstName = "Fred",
                             IsActive = true,
@@ -219,7 +219,7 @@ namespace RareYellowTigers.Migrations
                         {
                             Id = 2,
                             Bio = "just another hard working blue collar man",
-                            CreatedOn = new DateTime(2023, 9, 22, 13, 4, 13, 189, DateTimeKind.Local).AddTicks(5395),
+                            CreatedOn = new DateTime(2023, 9, 23, 10, 19, 23, 511, DateTimeKind.Local).AddTicks(1550),
                             Email = "brubble@rockville.net",
                             FirstName = "Barny",
                             IsActive = true,
