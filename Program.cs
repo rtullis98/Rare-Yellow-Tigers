@@ -424,7 +424,7 @@ app.MapGet("/api/users/{userId}/posts", (RareYellowTigersDbContext db, int id) =
 
 
 //Add a Tag to a Post
-app.MapPost("/api/post/tagpost", (RareYellowTigersDbContext db, int postId, int tagId) =>
+app.MapPost("/api/post/tagpost/{postId}/{tagId}", (RareYellowTigersDbContext db, int postId, int tagId) =>
 {
     var post = db.Posts.SingleOrDefault(s => s.Id == postId);
     var tag = db.Tags.SingleOrDefault(g => g.Id == tagId);
