@@ -256,6 +256,23 @@ app.MapGet("/api/postsbyuser/{id}", async (RareYellowTigersDbContext db, int id)
 });
 
 //GET SINGLE POST by POST ID
+app.MapGet("/api/singlepostByPostId/{id}", async (RareYellowTigersDbContext db, int id) =>
+{
+    var posts = await db.Posts
+        .Include(p => p.Category)
+        .Where(p => p.Id == id)
+        .SingleOrDefaultAsync();
+
+    if (posts == null)
+    {
+        return Results.NotFound();
+    }
+
+
+    return Results.Ok(posts);
+});
+
+//GET SINGLE POST by POST ID
 app.MapGet("/api/singlepostsbyuser/{id}", async (RareYellowTigersDbContext db, int id) =>
 {
     var posts = await db.Posts
