@@ -256,36 +256,32 @@ app.MapGet("/api/postsbyuser/{id}", async (RareYellowTigersDbContext db, int id)
 });
 
 //GET SINGLE POST by POST ID
-app.MapGet("/api/singlepostsbyuser/{id}", async (RareYellowTigersDbContext db, int id) =>
+app.MapGet("/api/singlepostByPostId/{id}", async (RareYellowTigersDbContext db, int id) =>
 {
     var posts = await db.Posts
-        .Include(p => p.RareUser)
         .Include(p => p.Category)
-        .Include(p => p.Tags)
-        .Include(p => p.Comments)
-        .Include(p => p.Reactions)
         .Where(p => p.Id == id)
-        .ToListAsync();
+        .SingleOrDefaultAsync();
 
     if (posts == null)
     {
         return Results.NotFound();
     }
 
-    var postDTOs = posts.Select(post => new PostDTO
-    {
-        Id = post.Id,
-        Title = post.Title,
-        UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
-        Content = post.Content,
-        PublicationDate = post.PublicationDate,
-        Category = post.Category.Label,
-        Tags = post.Tags.Select(tag => tag.Label).ToList(),
-        Comments = post.Comments.ToList(),
-        Reactions = post.Reactions.ToList(),
-    }).ToList();
+    //var postDTOs = posts.Select(post => new PostDTO
+    //{
+    //    Id = post.Id,
+    //    Title = post.Title,
+    //    UserName = $"{post.RareUser.FirstName} {post.RareUser.LastName}",
+    //    Content = post.Content,
+    //    PublicationDate = post.PublicationDate,
+    //    Category = post.Category.Label,
+    //    Tags = post.Tags.Select(tag => tag.Label).ToList(),
+    //    Comments = post.Comments.ToList(),
+    //    Reactions = post.Reactions.ToList(),
+    //}).ToList();
 
-    return Results.Ok(postDTOs);
+    return Results.Ok(posts);
 });
 
 
